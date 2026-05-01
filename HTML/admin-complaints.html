@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Admin Complaints</title>
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body class="admin-body">
+
+<!-- HEADER -->
+<div class="admin-header">
+    Complaints Management
+</div>
+
+<div class="admin-container">
+
+    <!-- SIDEBAR -->
+    <div class="admin-sidebar">
+        <a href="admin-dashboard.html">Dashboard</a>
+        <a href="manage-books.html">Manage Books</a>
+        <a href="approve-requests.html">Approve Requests</a>
+        <a href="admin-complaints.html" class="active">Complaints</a>
+        <a href="index.html">Logout</a>
+    </div>
+
+    <!-- CONTENT -->
+    <div class="admin-content">
+
+        <h2>All Complaints</h2>
+        <p class="subtitle">Review and manage user complaints</p>
+
+        <table>
+            <tr>
+                <th>Complaint ID</th>
+                <th>User ID</th>
+                <th>Issue</th>
+                <th>Status</th>
+            </tr>
+
+            <tr>
+                <td>C-101</td>
+                <td>21045</td>
+                <td>Internet Problem</td>
+                <td class="pending">Pending</td>
+            </tr>
+
+            <tr>
+                <td>C-102</td>
+                <td>21046</td>
+                <td>Seating Issue</td>
+                <td class="approved">Resolved</td>
+            </tr>
+
+            <tr>
+                <td>C-103</td>
+                <td>21047</td>
+                <td>Lighting Issue</td>
+                <td class="pending">Pending</td>
+            </tr>
+
+        </table>
+
+    </div>
+
+</div>
+
+</body>
+</html>
