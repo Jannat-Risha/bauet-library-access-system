@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <title>Dashboard | BAUET Smart Library</title>
+    <link rel="stylesheet" href="dashboard.css">
+</head>
+<body>
+
+<div class="header">
+    BAUET Smart Library Access System
+
+    <!-- 3 DOT MENU -->
+    <div class="menu-container">
+        <button class="menu-btn" onclick="toggleMenu()">⋮</button>
+        <div class="menu-content" id="menu">
+            <a href="profile.html">Profile</a>
+            <a href="about.html">About</a>
+            <a href="book-detail.html">Book Detail</a>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+        <a href="dashboard.html" class="active">Dashboard</a>
+        <a href="book-search.html">Book Search</a>
+        <a href="issue-return.html">Issue / Return</a>
+        <a href="reservation.html">My Reservations</a>
+        <a href="notifications.html">Notifications</a>
+        <a href="complaints.html">Complaints</a>
+        <a href="index.html">Logout</a>
+    </div>
+
+    <!-- CONTENT -->
+    <div class="content">
+        <div class="notice">
+            ⚠ You have books nearing due date.
+            <a href="notifications.html">View Notifications</a>
+        </div>
+
+        <h2>Welcome, Student</h2>
+        <p class="subtitle">Central control panel of the smart library system</p>
+
+        <div class="cards">
+            <div class="card"><h3>Total Books</h3><span>1200</span></div>
+            <div class="card"><h3>Issued Books</h3><span>350</span></div>
+            <div class="card"><h3>Available Books</h3><span>850</span></div>
+            <div class="card"><h3>My Issued Books</h3><span>2</span></div>
+        </div>
+
+        <div class="actions">
+            <a href="book-search.html" class="action-btn">Search Books</a>
+            <a href="issue-return.html" class="action-btn">Issue / Return</a>
+            <a href="reservation.html" class="action-btn">My Reservations</a>
+            <a href="complaints.html" class="action-btn">Submit Complaint</a>
+        </div>
+    </div>
+</div>
+
+<script>
+function toggleMenu() {
+    document.getElementById("menu").classList.toggle("show");
+}
+window.onclick = function(e) {
+    if (!e.target.matches('.menu-btn')) {
+        var menu = document.getElementById("menu");
+        if (menu.classList.contains('show')) {
+            menu.classList.remove('show');
+        }
+    }
+}
+</script>
+
+</body>
+</html>
