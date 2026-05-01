@@ -1,112 +1,44 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>BAUET Smart Library Access System</title>
-
-    <!-- CSS -->
-    <link rel="stylesheet" href="style.css">
-
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<meta charset="UTF-8">
+<title>Login</title>
+<link rel="stylesheet" href="style.css">
 </head>
 
 <body class="login-page">
 
-    <!-- 3 Dot Menu -->
-    <div class="top-menu">
-        <i class="fa-solid fa-ellipsis-vertical"></i>
+<div class="login-box">
+
+    <div class="left-panel">
+        <h1>Welcome</h1>
+        <h2>Smart Library System</h2>
     </div>
 
-    <div class="login-box">
+    <div class="right-panel">
+        <form onsubmit="login(event)">
+            <input type="text" id="username" placeholder="Username" required>
+            <input type="password" id="password" placeholder="Password" required>
 
-        <!-- LEFT -->
-        <div class="left-panel">
-            <h1>Welcome to</h1>
-            <h2>BAUET Smart Library Access System</h2>
-            <p>Official Digital Library Access Platform</p>
-        </div>
-
-        <!-- RIGHT -->
-        <div class="right-panel">
-
-            <div class="icon">👤</div>
-
-            <!-- LOGIN FORM -->
-            <form onsubmit="login(event)">
-
-                <input type="text" id="username" placeholder="Username" required>
-
-                <input type="password" id="password" placeholder="Password" required>
-
-                <div class="options">
-                    <label>
-                        <input type="checkbox" onclick="togglePassword()"> Show Password
-                    </label>
-                </div>
-
-                <button type="submit" class="login-btn">
-                    Login
-                </button>
-
-                <button type="reset" class="clear-btn">
-                    Clear
-                </button>
-
-            </form>
-
-        </div>
+            <button class="login-btn">Login</button>
+        </form>
     </div>
 
-    <!-- SCRIPT -->
-    <script>
+</div>
 
-        // password show/hide
-        function togglePassword() {
-            const pass = document.getElementById("password");
-            pass.type = pass.type === "password" ? "text" : "password";
-        }
+<script>
+function login(e){
+    e.preventDefault();
 
-        // LOGIN FUNCTION (REAL BACKEND CONNECT)
-        function login(event) {
-            event.preventDefault();
+    let username = document.getElementById("username").value;
 
-            const username = document.getElementById("username").value;
-            const password = document.getElementById("password").value;
-
-            fetch("http://localhost:5000/api/login", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({ username, password })
-            })
-            .then(res => res.json())
-            .then(data => {
-
-                if (data.success) {
-
-                    // ✅ JWT TOKEN SAVE
-                    localStorage.setItem("token", data.token);
-                    localStorage.setItem("user", JSON.stringify(data.user));
-
-                    alert("Login Successful");
-
-                    // redirect
-                    window.location.href = "dashboard.html";
-
-                } else {
-                    alert(data.message || "Login Failed");
-                }
-
-            })
-            .catch(err => {
-                console.log(err);
-                alert("Server Error");
-            });
-        }
-
-    </script>
+    if(username === "admin"){
+        window.location.href = "admin-dashboard.html";
+    } else {
+        window.location.href = "dashboard.html";
+    }
+}
+</script>
 
 </body>
 </html>
