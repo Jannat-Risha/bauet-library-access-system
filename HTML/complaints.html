@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <title>Complaints | BAUET Smart Library Access System</title>
+    <link rel="stylesheet" href="complaints.css">
+</head>
+
+<body>
+
+    <div class="header">
+        BAUET Smart Library Access System
+    </div>
+
+    <div class="container">
+
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <a href="dashboard.html">Dashboard</a>
+            <a href="book-search.html">Book Search</a>
+            <a href="issue-return.html">Issue / Return</a>
+            <a href="reservation.html">My Reservations</a>
+            <a href="notifications.html">Notifications</a>
+            <a href="complaints.html" class="active">Complaints</a>
+            <a href="index.html">Logout</a>
+        </div>
+
+        <!-- Content -->
+        <div class="content">
+            <h2>Submit a Complaint</h2>
+            <p class="subtitle">
+                Report library-related issues for quick resolution
+            </p>
+
+            <!-- Complaint Form -->
+            <div class="box">
+                <h3>Complaint Form</h3>
+
+                <input type="text" placeholder="Student ID">
+
+                <select>
+                    <option>Select Complaint Type</option>
+                    <option>Internet Problem</option>
+                    <option>Seating Issue</option>
+                    <option>Lighting / Environment</option>
+                    <option>Book Related Issue</option>
+                    <option>Other</option>
+                </select>
+
+                <textarea placeholder="Describe your problem..."></textarea>
+
+                <button class="submit-btn">Submit Complaint</button>
+            </div>
+
+            <!-- Complaint Status -->
+            <div class="box">
+                <h3>My Complaint Status</h3>
+
+                <table>
+                    <tr>
+                        <th>Complaint ID</th>
+                        <th>Type</th>
+                        <th>Status</th>
+                    </tr>
+
+                    <tr>
+                        <td>C-101</td>
+                        <td>Internet Problem</td>
+                        <td class="pending">Pending</td>
+                    </tr>
+
+                    <tr>
+                        <td>C-102</td>
+                        <td>Seating Issue</td>
+                        <td class="resolved">Resolved</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+</body>
+
+</html>
