@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <title>Book Search | BAUET Smart Library Access System</title>
+    <link rel="stylesheet" href="book-search.css">
+</head>
+
+<body>
+
+    <div class="header">BAUET Smart Library Access System</div>
+
+    <div class="container">
+        <div class="sidebar">
+            <a href="dashboard.html">Dashboard</a>
+            <a href="book-search.html" class="active">Book Search</a>
+            <a href="issue-return.html">Issue / Return</a>
+            <a href="reservation.html">My Reservations</a>
+            <a href="notifications.html">Notifications</a>
+            <a href="complaints.html">Complaints</a>
+            <a href="index.html">Logout</a>
+        </div>
+
+        <div class="content">
+            <h2>Search & Track Books</h2>
+            <p class="subtitle">View real-time book availability</p>
+
+            <div class="search-box">
+                <input type="text" placeholder="Enter book name or author">
+                <button>Search</button>
+            </div>
+
+            <table>
+                <tr>
+                    <th>Book ID</th>
+                    <th>Book Name</th>
+                    <th>Status</th>
+                    <th>Holder</th>
+                </tr>
+                <tr>
+                    <td>101</td>
+                    <td>Data Structures</td>
+                    <td class="available">Available</td>
+                    <td>-</td>
+                </tr>
+                <tr>
+                    <td>102</td>
+                    <td>Operating Systems</td>
+                    <td class="issued">Issued</td>
+                    <td>Student 21045</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+</body>
+
+</html>
