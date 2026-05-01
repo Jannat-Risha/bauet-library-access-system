@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <title>My Reservations</title>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial;
+            background: #f4f6f9;
+        }
+
+        /* Header */
+        .header {
+            background: #1e2a78;
+            color: white;
+            padding: 15px;
+            text-align: center;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        /* Layout */
+        .container {
+            display: flex;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 220px;
+            background: #2f3eb1;
+            min-height: 100vh;
+        }
+
+        .sidebar a {
+            display: block;
+            color: white;
+            padding: 14px;
+            text-decoration: none;
+        }
+
+        .sidebar a:hover {
+            background: #1b277c;
+        }
+
+        .active {
+            background: #0f1a5c;
+        }
+
+        /* Content */
+        .content {
+            flex: 1;
+            padding: 30px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+        }
+
+        th,
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background: #eef1f8;
+        }
+
+        .pending {
+            color: orange;
+            font-weight: bold;
+        }
+
+        .approved {
+            color: green;
+            font-weight: bold;
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <div class="header">BAUET Smart Library Access System</div>
+
+    <div class="container">
+
+        <div class="sidebar">
+            <a href="dashboard.html">Dashboard</a>
+            <a href="book-search.html">Book Search</a>
+            <a href="issue-return.html">Issue / Return</a>
+            <a href="reservation.html" class="active">My Reservations</a>
+            <a href="notifications.html">Notifications</a>
+            <a href="complaints.html">Complaints</a>
+            <a href="index.html">Logout</a>
+        </div>
+
+        <div class="content">
+            <h2>Book Reservations</h2>
+            <p>Track your reserved books</p>
+
+            <table>
+                <tr>
+                    <th>Reservation ID</th>
+                    <th>Book Name</th>
+                    <th>Reserved Date</th>
+                    <th>Status</th>
+                </tr>
+
+                <tr>
+                    <td>R-101</td>
+                    <td>Operating Systems</td>
+                    <td>20-Feb-2026</td>
+                    <td class="pending">Pending</td>
+                </tr>
+
+                <tr>
+                    <td>R-102</td>
+                    <td>Database Systems</td>
+                    <td>18-Feb-2026</td>
+                    <td class="approved">Approved</td>
+                </tr>
+
+            </table>
+        </div>
+
+    </div>
+</body>
+
+</html>
