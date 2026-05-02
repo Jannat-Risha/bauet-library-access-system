@@ -16,28 +16,72 @@
     </div>
 
     <div class="right-panel">
-        <form onsubmit="login(event)">
+        <form id="loginForm">
+
+            <select id="role" required>
+                <option value="">Select Role</option>
+                <option value="admin">Admin</option>
+                <option value="user">User</option>
+            </select>
+
             <input type="text" id="username" placeholder="Username" required>
+
             <input type="password" id="password" placeholder="Password" required>
 
-            <button class="login-btn">Login</button>
+            <button type="submit" class="login-btn">Login</button>
+
         </form>
     </div>
 
 </div>
 
 <script>
-function login(e){
+document.getElementById("loginForm").addEventListener("submit", async function(e){
     e.preventDefault();
 
+    let role = document.getElementById("role").value;
     let username = document.getElementById("username").value;
+    let password = document.getElementById("password").value;
 
-    if(username === "admin"){
-        window.location.href = "admin-dashboard.html";
-    } else {
-        window.location.href = "dashboard.html";
+    if(!role){
+        alert("Please select role");
+        return;
     }
-}
+
+    try {
+        let res = await fetch("http://127.0.0.1:5000/api/login", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({username,password})
+        });
+
+        let data = await res.json();
+
+        if(data.success){
+
+            // 🔥 role check
+            if(data.user.role !== role){
+                alert("Wrong role selected!");
+                return;
+            }
+
+            // 🔥 redirect
+            if(role === "admin"){
+                window.location.href = "admin-dashboard.html";
+            } else {
+                window.location.href = "dashboard.html";
+            }
+
+        } else {
+            alert("Wrong Username or Password");
+        }
+
+    } catch (err) {
+        alert("Server Error");
+    }
+});
 </script>
 
 </body>
