@@ -28,33 +28,78 @@
             <p class="subtitle">View real-time book availability</p>
 
             <div class="search-box">
-                <input type="text" placeholder="Enter book name or author">
-                <button>Search</button>
+                <input type="text" id="searchInput" placeholder="Enter book name or author">
+                <button onclick="searchBooks()">Search</button>
             </div>
 
             <table>
-                <tr>
-                    <th>Book ID</th>
-                    <th>Book Name</th>
-                    <th>Status</th>
-                    <th>Holder</th>
-                </tr>
-                <tr>
-                    <td>101</td>
-                    <td>Data Structures</td>
-                    <td class="available">Available</td>
-                    <td>-</td>
-                </tr>
-                <tr>
-                    <td>102</td>
-                    <td>Operating Systems</td>
-                    <td class="issued">Issued</td>
-                    <td>Student 21045</td>
-                </tr>
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Book Name</th>
+                        <th>Author</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+
+                <tbody id="bookTable">
+                    <!-- Dynamic data আসবে -->
+                </tbody>
             </table>
         </div>
     </div>
 
-</body>
+<script>
+let booksData = [];
 
+// 🔥 load all books
+async function loadBooks(){
+    try{
+        let res = await fetch("http://127.0.0.1:5000/api/books");
+        let data = await res.json();
+
+        booksData = data;
+        displayBooks(data);
+    }
+    catch(err){
+        console.log(err);
+    }
+}
+
+// 🔥 show books in table
+function displayBooks(books){
+    let table = document.getElementById("bookTable");
+    table.innerHTML = "";
+
+    books.forEach((b,i)=>{
+        table.innerHTML += `
+            <tr>
+                <td>${i+1}</td>
+                <td>${b.name}</td>
+                <td>${b.author}</td>
+                <td class="${b.status === 'Available' ? 'available' : 'issued'}">
+                    ${b.status}
+                </td>
+            </tr>
+        `;
+    });
+}
+
+// 🔥 search function
+function searchBooks(){
+    let text = document.getElementById("searchInput").value.toLowerCase();
+
+    let filtered = booksData.filter(b =>
+        b.name.toLowerCase().includes(text) ||
+        b.author.toLowerCase().includes(text)
+    );
+
+    displayBooks(filtered);
+}
+
+// 🔥 page load এ call
+loadBooks();
+</script>
+
+</body>
 </html>
