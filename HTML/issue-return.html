@@ -26,22 +26,83 @@
         <div class="content">
             <h2>Book Issue & Return</h2>
 
+            <!-- ISSUE -->
             <div class="box">
                 <h3>Issue Book</h3>
-                <input type="text" placeholder="Student ID">
-                <input type="text" placeholder="Book ID">
-                <input type="date">
-                <button class="issue-btn">Issue Book</button>
+                <input type="text" id="issueStudent" placeholder="Student ID">
+                <input type="text" id="issueBook" placeholder="Book ID">
+                <input type="date" id="issueDate">
+                <button class="issue-btn" onclick="issueBook()">Issue Book</button>
             </div>
 
+            <!-- RETURN -->
             <div class="box">
                 <h3>Return Book</h3>
-                <input type="text" placeholder="Student ID">
-                <input type="text" placeholder="Book ID">
-                <button class="return-btn">Return Book</button>
+                <input type="text" id="returnStudent" placeholder="Student ID">
+                <input type="text" id="returnBook" placeholder="Book ID">
+                <button class="return-btn" onclick="returnBook()">Return Book</button>
             </div>
         </div>
     </div>
+
+<script>
+// 🔥 ISSUE BOOK
+async function issueBook(){
+    let student = document.getElementById("issueStudent").value;
+    let book = document.getElementById("issueBook").value;
+    let date = document.getElementById("issueDate").value;
+
+    if(!student || !book){
+        alert("Fill all fields");
+        return;
+    }
+
+    try{
+        let res = await fetch("http://127.0.0.1:5000/api/issue",{
+            method:"POST",
+            headers:{"Content-Type":"application/json"},
+            body:JSON.stringify({student,book,date})
+        });
+
+        let data = await res.json();
+
+        if(data.success){
+            alert("Book Issued Successfully");
+        }
+    }
+    catch(err){
+        alert("Server Error");
+    }
+}
+
+// 🔥 RETURN BOOK
+async function returnBook(){
+    let student = document.getElementById("returnStudent").value;
+    let book = document.getElementById("returnBook").value;
+
+    if(!student || !book){
+        alert("Fill all fields");
+        return;
+    }
+
+    try{
+        let res = await fetch("http://127.0.0.1:5000/api/return",{
+            method:"POST",
+            headers:{"Content-Type":"application/json"},
+            body:JSON.stringify({student,book})
+        });
+
+        let data = await res.json();
+
+        if(data.success){
+            alert("Book Returned Successfully");
+        }
+    }
+    catch(err){
+        alert("Server Error");
+    }
+}
+</script>
 
 </body>
 
