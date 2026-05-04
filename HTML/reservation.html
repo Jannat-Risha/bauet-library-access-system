@@ -13,7 +13,6 @@
             background: #f4f6f9;
         }
 
-        /* Header */
         .header {
             background: #1e2a78;
             color: white;
@@ -23,12 +22,10 @@
             font-weight: bold;
         }
 
-        /* Layout */
         .container {
             display: flex;
         }
 
-        /* Sidebar */
         .sidebar {
             width: 220px;
             background: #2f3eb1;
@@ -50,7 +47,6 @@
             background: #0f1a5c;
         }
 
-        /* Content */
         .content {
             flex: 1;
             padding: 30px;
@@ -106,31 +102,60 @@
             <p>Track your reserved books</p>
 
             <table>
-                <tr>
-                    <th>Reservation ID</th>
-                    <th>Book Name</th>
-                    <th>Reserved Date</th>
-                    <th>Status</th>
-                </tr>
+                <thead>
+                    <tr>
+                        <th>Reservation ID</th>
+                        <th>Book Name</th>
+                        <th>Reserved Date</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
 
-                <tr>
-                    <td>R-101</td>
-                    <td>Operating Systems</td>
-                    <td>20-Feb-2026</td>
-                    <td class="pending">Pending</td>
-                </tr>
-
-                <tr>
-                    <td>R-102</td>
-                    <td>Database Systems</td>
-                    <td>18-Feb-2026</td>
-                    <td class="approved">Approved</td>
-                </tr>
-
+                <!-- 🔥 dynamic data এখানে আসবে -->
+                <tbody id="resTable"></tbody>
             </table>
         </div>
 
     </div>
+
+<script>
+async function loadReservations(){
+    try{
+        let res = await fetch("http://127.0.0.1:5000/api/reservations");
+        let data = await res.json();
+
+        let table = document.getElementById("resTable");
+        table.innerHTML = "";
+
+        // ❗ যদি data না থাকে
+        if(data.length === 0){
+            table.innerHTML = "<tr><td colspan='4'>No Reservations</td></tr>";
+            return;
+        }
+
+        // 🔥 loop করে show
+        data.forEach((r,i)=>{
+            table.innerHTML += `
+                <tr>
+                    <td>R-${100+i}</td>
+                    <td>${r.book}</td>
+                    <td>${new Date().toLocaleDateString()}</td>
+                    <td class="${r.status === 'Approved' ? 'approved' : 'pending'}">
+                        ${r.status}
+                    </td>
+                </tr>
+            `;
+        });
+
+    }catch(err){
+        console.log("ERROR:", err);
+    }
+}
+
+// 🔥 page load এ call
+loadReservations();
+</script>
+
 </body>
 
 </html>
