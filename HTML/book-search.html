@@ -43,33 +43,47 @@
                 </thead>
 
                 <tbody id="bookTable">
-                    <!-- Dynamic data আসবে -->
                 </tbody>
             </table>
         </div>
     </div>
 
 <script>
+console.log("JS RUNNING ✅");
+
 let booksData = [];
 
-// 🔥 load all books
+// 🔥 LOAD BOOKS FROM BACKEND
 async function loadBooks(){
     try{
+        console.log("FETCH START");
+
         let res = await fetch("http://127.0.0.1:5000/api/books");
+
+        console.log("RESPONSE:", res);
+
         let data = await res.json();
 
+        console.log("DATA:", data);
+
         booksData = data;
+
         displayBooks(data);
     }
     catch(err){
-        console.log(err);
+        console.log("ERROR:", err);
     }
 }
 
-// 🔥 show books in table
+// 🔥 SHOW BOOKS IN TABLE
 function displayBooks(books){
     let table = document.getElementById("bookTable");
     table.innerHTML = "";
+
+    if(books.length === 0){
+        table.innerHTML = "<tr><td colspan='4'>No books found</td></tr>";
+        return;
+    }
 
     books.forEach((b,i)=>{
         table.innerHTML += `
@@ -85,7 +99,7 @@ function displayBooks(books){
     });
 }
 
-// 🔥 search function
+// 🔥 SEARCH FUNCTION
 function searchBooks(){
     let text = document.getElementById("searchInput").value.toLowerCase();
 
@@ -97,7 +111,7 @@ function searchBooks(){
     displayBooks(filtered);
 }
 
-// 🔥 page load এ call
+// 🔥 CALL ON PAGE LOAD
 loadBooks();
 </script>
 
