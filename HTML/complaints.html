@@ -38,10 +38,10 @@
             <div class="box">
                 <h3>Complaint Form</h3>
 
-                <input type="text" placeholder="Student ID">
+                <input type="text" id="studentId" placeholder="Student ID">
 
-                <select>
-                    <option>Select Complaint Type</option>
+                <select id="complaintType">
+                    <option value="">Select Complaint Type</option>
                     <option>Internet Problem</option>
                     <option>Seating Issue</option>
                     <option>Lighting / Environment</option>
@@ -49,9 +49,9 @@
                     <option>Other</option>
                 </select>
 
-                <textarea placeholder="Describe your problem..."></textarea>
+                <textarea id="complaintMsg" placeholder="Describe your problem..."></textarea>
 
-                <button class="submit-btn">Submit Complaint</button>
+                <button class="submit-btn" onclick="submitComplaint()">Submit Complaint</button>
             </div>
 
             <!-- Complaint Status -->
@@ -59,28 +59,75 @@
                 <h3>My Complaint Status</h3>
 
                 <table>
-                    <tr>
-                        <th>Complaint ID</th>
-                        <th>Type</th>
-                        <th>Status</th>
-                    </tr>
+                    <thead>
+                        <tr>
+                            <th>Complaint ID</th>
+                            <th>Type</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
 
-                    <tr>
-                        <td>C-101</td>
-                        <td>Internet Problem</td>
-                        <td class="pending">Pending</td>
-                    </tr>
-
-                    <tr>
-                        <td>C-102</td>
-                        <td>Seating Issue</td>
-                        <td class="resolved">Resolved</td>
-                    </tr>
+                    <tbody id="complaintTable"></tbody>
                 </table>
             </div>
         </div>
 
     </div>
+
+    <script>
+        // 🔥 submit complaint
+        async function submitComplaint() {
+            let user = document.getElementById("studentId").value;
+            let type = document.getElementById("complaintType").value;
+            let message = document.getElementById("complaintMsg").value;
+
+            if (!user || !type || !message) {
+                alert("Fill all fields");
+                return;
+            }
+
+            let res = await fetch("http://127.0.0.1:5000/api/complaints", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ user, type, message })
+            });
+
+            let data = await res.json();
+
+            if (data.success) {
+                alert("Complaint Submitted");
+                loadComplaints();
+            }
+        }
+
+        // 🔥 load complaints
+        async function loadComplaints() {
+            let res = await fetch("http://127.0.0.1:5000/api/complaints");
+            let data = await res.json();
+
+            let table = document.getElementById("complaintTable");
+            table.innerHTML = "";
+
+            if (data.length === 0) {
+                table.innerHTML = "<tr><td colspan='3'>No Complaints</td></tr>";
+                return;
+            }
+
+            data.forEach((c, i) => {
+                table.innerHTML += `
+            <tr>
+                <td>C-${100 + i}</td>
+                <td>${c.type}</td>
+                <td class="${c.status === 'Pending' ? 'pending' : 'resolved'}">
+                    ${c.status}
+                </td>
+            </tr>
+        `;
+            });
+        }
+
+        loadComplaints();
+    </script>
 
 </body>
 
