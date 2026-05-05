@@ -32,24 +32,16 @@ const Book = mongoose.model("Book", {
 const Request = mongoose.model("Request", {
     user: String,
     book: String,
-    status: String
+    status: String,
+    issueDate: Date,
+    returnDate: Date
 });
 
+// ✅ RESERVATION MODEL ADD
 const Reservation = mongoose.model("Reservation", {
     user: String,
     book: String,
     status: String
-});
-
-const Complaint = mongoose.model("Complaint", {
-    user: String,
-    issue: String,
-    status: String
-});
-
-const Notification = mongoose.model("Notification", {
-    message: String,
-    type: String
 });
 
 /* ================= TEST ================= */
@@ -62,8 +54,6 @@ app.get("/", (req,res)=>{
 
 app.post("/api/login", async (req,res)=>{
     try{
-        console.log("LOGIN TRY:", req.body);
-
         const {username,password} = req.body;
 
         const user = await User.findOne({username,password});
@@ -76,88 +66,133 @@ app.post("/api/login", async (req,res)=>{
     }
     catch(err){
         console.log("LOGIN ERROR:", err);
-        res.status(500).json({success:false});
+        res.json({success:false});
     }
 });
 
 /* ================= BOOK ================= */
 
 app.get("/api/books", async (req,res)=>{
-    res.json(await Book.find());
+    try{
+        const books = await Book.find();
+        res.json(books);
+    }catch(err){
+        console.log(err);
+        res.json([]);
+    }
 });
 
-app.post("/api/books", async (req,res)=>{
-    const {name,author} = req.body;
+/* ================= ISSUE ================= */
 
-    const book = new Book({
-        name,
-        author,
-        status:"Available"
-    });
+app.post("/api/issue", async (req,res)=>{
+    try{
+        const {student,book} = req.body;
 
-    await book.save();
-    res.json(book);
+        let issueDate = new Date();
+
+        // 🔥 return date = 2 days (demo)
+        let returnDate = new Date();
+        returnDate.setDate(returnDate.getDate() + 2);
+
+        const r = new Request({
+            user: student.trim(),
+            book: book.trim(),
+            status: "Issued",
+            issueDate,
+            returnDate
+        });
+
+        await r.save();
+
+        res.json({success:true});
+    }
+    catch(err){
+        console.log("ISSUE ERROR:", err);
+        res.json({success:false});
+    }
 });
 
+/* ================= RETURN ================= */
+
+app.post("/api/return", async (req,res)=>{
+    try{
+        const {student,book} = req.body;
+
+        const result = await Request.deleteMany({
+            user: student.trim(),
+            book: book.trim()
+        });
+
+        console.log("DELETE RESULT:", result);
+
+        res.json({success:true});
+    }
+    catch(err){
+        console.log("RETURN ERROR:", err);
+        res.json({success:false});
+    }
+});
 /* ================= REQUEST ================= */
 
 app.get("/api/requests", async (req,res)=>{
-    res.json(await Request.find());
-});
-
-app.post("/api/approve/:id", async (req,res)=>{
-    const r = await Request.findById(req.params.id);
-
-    if(r){
-        r.status="Approved";
-        await r.save();
+    try{
+        const data = await Request.find();
+        res.json(data);
+    }catch(err){
+        console.log(err);
+        res.json([]);
     }
-
-    res.json(r);
 });
 
 /* ================= RESERVATION ================= */
 
 app.get("/api/reservations", async (req,res)=>{
-    res.json(await Reservation.find());
-});
-
-app.post("/api/reservations", async (req,res)=>{
-    const {user,book} = req.body;
-
-    const r = new Reservation({
-        user,
-        book,
-        status:"Pending"
-    });
-
-    await r.save();
-    res.json(r);
-});
-
-/* ================= COMPLAINT ================= */
-
-app.get("/api/complaints", async (req,res)=>{
-    res.json(await Complaint.find());
-});
-
-app.post("/api/complaints", async (req,res)=>{
-    const {user,issue} = req.body;
-
-    const c = new Complaint({
-        user,
-        issue,
-        status:"Pending"
-    });
-
-    await c.save();
-    res.json(c);
+    try{
+        const data = await Reservation.find();
+        res.json(data);
+    }catch(err){
+        console.log("RES ERROR:", err);
+        res.json([]);
+    }
 });
 
 /* ================= NOTIFICATION ================= */
 
+
 app.get("/api/notifications", async (req,res)=>{
-    res.json(await Notification.find());
+    try{
+        let today = new Date();
+
+        let requests = await Request.find();
+
+        let notifications = [];
+        let unique = new Set();
+
+        requests.forEach(r=>{
+            if(!r.returnDate) return;
+
+            // 🔥 date normalize (important fix)
+            let returnDate = new Date(r.returnDate);
+            let diff = Math.ceil(
+                (returnDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24)
+            );
+
+            // 🔥 relaxed condition (main fix)
+            if(diff <= 3 && diff >= 0 && !unique.has(r.book)){
+                unique.add(r.book);
+
+                notifications.push({
+                    message: `${r.book} must be returned soon`
+                });
+            }
+        });
+
+        res.json(notifications);
+
+    }catch(err){
+        console.log("NOTI ERROR:", err);
+        res.json([]);
+    }
 });
 
 /* ================= START ================= */
