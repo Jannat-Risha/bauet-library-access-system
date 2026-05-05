@@ -24,15 +24,46 @@
 
 <h2>My Profile</h2>
 
-<div class="box">
-<p><strong>Name:</strong> Student Name</p>
-<p><strong>ID:</strong> 12345</p>
-<p><strong>Email:</strong> student@email.com</p>
-</div>
+<div class="box" style="text-align:center">
+
+<!-- 🔥 PROFILE IMAGE -->
+<img id="profilePic" width="120" style="border-radius:50%; margin-bottom:15px;">
+
+<p><strong>Name:</strong> <span id="name"></span></p>
+<p><strong>ID:</strong> <span id="id"></span></p>
+<p><strong>Email:</strong> <span id="email"></span></p>
 
 </div>
 
 </div>
+
+</div>
+
+<script>
+// 🔥 load profile
+async function loadProfile(){
+
+    // demo user (later login theke nite parbi)
+    let userId = "12345";
+
+    let res = await fetch("http://127.0.0.1:5000/api/profile/" + userId);
+    let data = await res.json();
+
+    if(!data){
+        alert("User not found");
+        return;
+    }
+
+    document.getElementById("name").innerText = data.username;
+    document.getElementById("id").innerText = data.username;
+    document.getElementById("email").innerText = data.email;
+
+    // 🔥 PROFILE IMAGE
+    document.getElementById("profilePic").src = data.image;
+}
+
+loadProfile();
+</script>
 
 </body>
 </html>
