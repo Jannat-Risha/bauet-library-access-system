@@ -26,31 +26,94 @@
 
 <h2>Add Book</h2>
 
-<input type="text" placeholder="Book Name"><br><br>
-<input type="text" placeholder="Author"><br><br>
+<input type="text" id="bookName" placeholder="Book Name"><br><br>
+<input type="text" id="bookAuthor" placeholder="Author"><br><br>
 
-<button class="approve-btn">Add Book</button>
+<button onclick="addBook()" class="approve-btn">Add Book</button>
 
 <h2 style="margin-top:30px;">All Books</h2>
 
 <table>
+<thead>
 <tr>
 <th>ID</th>
 <th>Name</th>
+<th>Author</th>
 <th>Status</th>
+<th>Action</th>
 </tr>
+</thead>
 
-<tr>
-<td>101</td>
-<td>Database</td>
-<td>Available</td>
-</tr>
+<tbody id="bookTable"></tbody>
 
 </table>
 
 </div>
 
 </div>
+
+<script>
+
+// 🔥 LOAD BOOKS
+async function loadBooks(){
+    let res = await fetch("http://127.0.0.1:5000/api/books");
+    let data = await res.json();
+
+    let table = document.getElementById("bookTable");
+    table.innerHTML = "";
+
+    data.forEach(book=>{
+        table.innerHTML += `
+        <tr>
+            <td>${book._id}</td>
+            <td>${book.name}</td>
+            <td>${book.author}</td>
+            <td class="${book.status === 'Available' ? 'available' : 'issued'}">
+                ${book.status}
+            </td>
+            <td>
+                <button onclick="deleteBook('${book._id}')">Delete</button>
+            </td>
+        </tr>
+        `;
+    });
+}
+
+// 🔥 ADD BOOK
+async function addBook(){
+    let name = document.getElementById("bookName").value;
+    let author = document.getElementById("bookAuthor").value;
+
+    if(!name || !author){
+        alert("Fill all fields");
+        return;
+    }
+
+    await fetch("http://127.0.0.1:5000/api/admin/add-book",{
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body: JSON.stringify({name, author})
+    });
+
+    document.getElementById("bookName").value = "";
+    document.getElementById("bookAuthor").value = "";
+
+    loadBooks();
+}
+
+// 🔥 DELETE BOOK
+async function deleteBook(id){
+    await fetch("http://127.0.0.1:5000/api/admin/delete-book/" + id,{
+        method:"DELETE"
+    });
+
+    loadBooks();
+}
+
+// 🔥 LOAD FIRST TIME
+loadBooks();
+
+</script>
 
 </body>
 </html>
