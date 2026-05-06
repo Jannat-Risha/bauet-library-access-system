@@ -26,12 +26,12 @@
 
 <div class="box" style="text-align:center">
 
-<!-- 🔥 PROFILE IMAGE -->
+<!-- PROFILE IMAGE -->
 <img id="profilePic" width="120" style="border-radius:50%; margin-bottom:15px;">
 
-<p><strong>Name:</strong> <span id="name"></span></p>
-<p><strong>ID:</strong> <span id="id"></span></p>
-<p><strong>Email:</strong> <span id="email"></span></p>
+<p><strong>Name:</strong> <span id="name">Loading...</span></p>
+<p><strong>ID:</strong> <span id="id">Loading...</span></p>
+<p><strong>Email:</strong> <span id="email">Loading...</span></p>
 
 </div>
 
@@ -40,26 +40,36 @@
 </div>
 
 <script>
-// 🔥 load profile
 async function loadProfile(){
 
-    // demo user (later login theke nite parbi)
     let userId = "12345";
 
-    let res = await fetch("http://127.0.0.1:5000/api/profile/" + userId);
-    let data = await res.json();
+    try{
+        let res = await fetch("http://127.0.0.1:5000/api/profile/" + userId);
+        let data = await res.json();
 
-    if(!data){
-        alert("User not found");
-        return;
+        console.log("PROFILE:", data); // debug
+
+        if(!data){
+            document.getElementById("name").innerText = "User not found";
+            return;
+        }
+
+        document.getElementById("name").innerText = data.username || "N/A";
+        document.getElementById("id").innerText = data.username || "N/A";
+        document.getElementById("email").innerText = data.email || "N/A";
+
+        // 🔥 image safe load
+        if(data.image){
+            document.getElementById("profilePic").src = data.image;
+        } else {
+            document.getElementById("profilePic").src = "https://via.placeholder.com/120";
+        }
+
+    }catch(err){
+        console.log("ERROR:", err);
+        alert("Server problem");
     }
-
-    document.getElementById("name").innerText = data.username;
-    document.getElementById("id").innerText = data.username;
-    document.getElementById("email").innerText = data.email;
-
-    // 🔥 PROFILE IMAGE
-    document.getElementById("profilePic").src = data.image;
 }
 
 loadProfile();
