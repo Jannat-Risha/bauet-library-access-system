@@ -1,12 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Approve Requests</title>
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body class="admin-body">
+
+<div class="admin-header">Approve Requests</div>
+
+<div class="admin-container">
+
+<div class="admin-sidebar">
+<a href="admin-dashboard.html">Dashboard</a>
+<a href="manage-books.html">Manage Books</a>
+<a href="approve-requests.html" class="active">Approve Requests</a>
+<a href="admin-complaints.html">Complaints</a>
+<a href="index.html">Logout</a>
+</div>
+
+<div class="admin-content">
+
+<h2>Pending Requests</h2>
+
+<table>
+<thead>
+<tr>
+<th>User</th>
+<th>Book</th>
+<th>Action</th>
+</tr>
+</thead>
+
+<!-- 🔥 IMPORTANT -->
 <tbody id="requestTable"></tbody>
 
+</table>
+
+</div>
+
+</div>
+
 <script>
+
+// 🔥 LOAD REQUESTS
 async function loadRequests(){
     let res = await fetch("http://127.0.0.1:5000/api/admin/recent-requests");
     let data = await res.json();
 
     let table = document.getElementById("requestTable");
     table.innerHTML = "";
+
+    if(data.length === 0){
+        table.innerHTML = "<tr><td colspan='3'>No Requests</td></tr>";
+        return;
+    }
 
     data.forEach(r=>{
         if(r.status === "Pending"){
@@ -24,6 +73,7 @@ async function loadRequests(){
     });
 }
 
+// 🔥 APPROVE
 async function approve(id){
     await fetch("http://127.0.0.1:5000/api/admin/approve",{
         method:"POST",
@@ -34,6 +84,7 @@ async function approve(id){
     loadRequests();
 }
 
+// 🔥 REJECT
 async function reject(id){
     await fetch("http://127.0.0.1:5000/api/admin/reject",{
         method:"POST",
@@ -44,5 +95,10 @@ async function reject(id){
     loadRequests();
 }
 
+// 🔥 FIRST LOAD
 loadRequests();
+
 </script>
+
+</body>
+</html>
