@@ -1,0 +1,38 @@
+<tbody id="complaintTable"></tbody>
+
+<script>
+async function loadComplaints(){
+    let res = await fetch("http://127.0.0.1:5000/api/admin/complaints");
+    let data = await res.json();
+
+    let table = document.getElementById("complaintTable");
+    table.innerHTML = "";
+
+    data.forEach(c=>{
+        table.innerHTML += `
+        <tr>
+            <td>${c._id}</td>
+            <td>${c.user}</td>
+            <td>${c.issue}</td>
+            <td>
+                ${c.status}
+                ${c.status !== "Resolved" ? 
+                `<button onclick="resolve('${c._id}')">Resolve</button>` : ""}
+            </td>
+        </tr>
+        `;
+    });
+}
+
+async function resolve(id){
+    await fetch("http://127.0.0.1:5000/api/admin/resolve-complaint",{
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body: JSON.stringify({id})
+    });
+
+    loadComplaints();
+}
+
+loadComplaints();
+</script>
