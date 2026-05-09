@@ -1,59 +1,48 @@
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<title>Approve Requests</title>
-<link rel="stylesheet" href="style.css">
-</head>
+<tbody id="requestTable"></tbody>
 
-<body class="admin-body">
+<script>
+async function loadRequests(){
+    let res = await fetch("http://127.0.0.1:5000/api/admin/recent-requests");
+    let data = await res.json();
 
-<div class="admin-header">Approve Requests</div>
+    let table = document.getElementById("requestTable");
+    table.innerHTML = "";
 
-<div class="admin-container">
+    data.forEach(r=>{
+        if(r.status === "Pending"){
+            table.innerHTML += `
+            <tr>
+                <td>${r.user}</td>
+                <td>${r.book}</td>
+                <td>
+                    <button onclick="approve('${r._id}')">Approve</button>
+                    <button onclick="reject('${r._id}')">Reject</button>
+                </td>
+            </tr>
+            `;
+        }
+    });
+}
 
-<div class="admin-sidebar">
-<a href="admin-dashboard.html">Dashboard</a>
-<a href="manage-books.html">Manage Books</a>
-<a href="approve-requests.html" class="active">Approve Requests</a>
-<a href="admin-complaints.html">Complaints</a>
-<a href="index.html">Logout</a>
-</div>
+async function approve(id){
+    await fetch("http://127.0.0.1:5000/api/admin/approve",{
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body: JSON.stringify({id})
+    });
 
-<div class="admin-content">
+    loadRequests();
+}
 
-<h2>Pending Requests</h2>
+async function reject(id){
+    await fetch("http://127.0.0.1:5000/api/admin/reject",{
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body: JSON.stringify({id})
+    });
 
-<table>
-<tr>
-<th>User</th>
-<th>Book</th>
-<th>Action</th>
-</tr>
+    loadRequests();
+}
 
-<tr>
-<td>Student 21045</td>
-<td>OS Book</td>
-<td>
-<button class="approve-btn">Approve</button>
-<button class="reject-btn">Reject</button>
-</td>
-</tr>
-
-<tr>
-<td>Student 21046</td>
-<td>DB Book</td>
-<td>
-<button class="approve-btn">Approve</button>
-<button class="reject-btn">Reject</button>
-</td>
-</tr>
-
-</table>
-
-</div>
-
-</div>
-
-</body>
-</html>
+loadRequests();
+</script>
