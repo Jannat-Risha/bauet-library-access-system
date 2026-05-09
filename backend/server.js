@@ -1,4 +1,5 @@
 const express = require("express");
+console.log("🔥 MY SERVER FILE RUNNING");
 const mongoose = require("mongoose");
 const cors = require("cors");
 
@@ -60,22 +61,31 @@ app.get("/", (req,res)=>{
 
 app.post("/api/login", async (req,res)=>{
     try{
-        const {username,password} = req.body;
+        let {username, password, role} = req.body;
 
-        const user = await User.findOne({username,password});
+        username = username.trim();
+        password = password.trim();
+        role = role.trim().toLowerCase(); // 🔥 fix
+
+        const user = await User.findOne({
+            username,
+            password,
+            role
+        });
 
         if(!user){
             return res.json({success:false});
         }
 
-        res.json({success:true,user});
-    }
-    catch(err){
-        console.log("LOGIN ERROR:", err);
+        res.json({
+            success:true,
+            role:user.role
+        });
+
+    }catch(err){
         res.json({success:false});
     }
 });
-
 /* ================= BOOK ================= */
 
 app.get("/api/books", async (req,res)=>{
@@ -133,7 +143,7 @@ app.post("/api/return", async (req,res)=>{
             book: book.trim()
         });
 
-        // 🔥 FIXED (আগে updateOne ছিল)
+        
         await Book.updateMany(
             { name: book.trim() },
             { $set: { status: "Available" } }
@@ -325,22 +335,47 @@ app.post("/api/admin/approve", async (req,res)=>{
         res.json({success:false});
     }
 });
+// 🔥 REJECT REQUEST (ADD THIS)
+app.post("/api/admin/reject", async (req,res)=>{
+    try{
+        const {id} = req.body;
+
+        await Request.findByIdAndUpdate(id,{
+            status:"Rejected"
+        });
+
+        res.json({success:true});
+    }catch(err){
+        console.log("REJECT ERROR:", err);
+        res.json({success:false});
+    }
+});
+
+/* ================= ADMIN FIX ================= */
 
 // 🔥 ADD BOOK
 app.post("/api/admin/add-book", async (req,res)=>{
     try{
+        console.log("🔥 ADD BOOK HIT");
+
         const {name, author} = req.body;
 
-        const b = new Book({
+        if(!name || !author){
+            return res.json({success:false});
+        }
+
+        const newBook = new Book({
             name,
             author,
             status:"Available"
         });
 
-        await b.save();
+        await newBook.save();
 
         res.json({success:true});
+
     }catch(err){
+        console.log("ADD BOOK ERROR:", err);
         res.json({success:false});
     }
 });
@@ -348,13 +383,16 @@ app.post("/api/admin/add-book", async (req,res)=>{
 // 🔥 DELETE BOOK
 app.delete("/api/admin/delete-book/:id", async (req,res)=>{
     try{
+        console.log("🔥 DELETE HIT");
+
         await Book.findByIdAndDelete(req.params.id);
+
         res.json({success:true});
     }catch(err){
+        console.log("DELETE ERROR:", err);
         res.json({success:false});
     }
 });
-
 // 🔥 RESOLVE COMPLAINT
 app.post("/api/admin/resolve-complaint", async (req,res)=>{
     try{
@@ -367,6 +405,16 @@ app.post("/api/admin/resolve-complaint", async (req,res)=>{
         res.json({success:true});
     }catch(err){
         res.json({success:false});
+    }
+});
+// 🔥 ADMIN GET ALL COMPLAINTS (ADD THIS)
+app.get("/api/admin/complaints", async (req,res)=>{
+    try{
+        const data = await Complaint.find().sort({_id:-1});
+        res.json(data);
+    }catch(err){
+        console.log("ADMIN COMPLAINT ERROR:", err);
+        res.json([]);
     }
 });
 
