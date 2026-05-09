@@ -1,6 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Admin Complaints</title>
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body class="admin-body">
+
+<div class="admin-header">
+    Complaints Management
+</div>
+
+<div class="admin-container">
+
+<div class="admin-sidebar">
+    <a href="admin-dashboard.html">Dashboard</a>
+    <a href="manage-books.html">Manage Books</a>
+    <a href="approve-requests.html">Approve Requests</a>
+    <a href="admin-complaints.html" class="active">Complaints</a>
+    <a href="index.html">Logout</a>
+</div>
+
+<div class="admin-content">
+
+<h2>All Complaints</h2>
+<p class="subtitle">Review and manage user complaints</p>
+
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>User</th>
+<th>Issue</th>
+<th>Status</th>
+<th>Action</th>
+</tr>
+</thead>
+
+<!-- 🔥 IMPORTANT -->
 <tbody id="complaintTable"></tbody>
 
+</table>
+
+</div>
+
+</div>
+
 <script>
+
+// 🔥 LOAD COMPLAINTS
 async function loadComplaints(){
     let res = await fetch("http://127.0.0.1:5000/api/admin/complaints");
     let data = await res.json();
@@ -8,22 +57,29 @@ async function loadComplaints(){
     let table = document.getElementById("complaintTable");
     table.innerHTML = "";
 
+    if(data.length === 0){
+        table.innerHTML = "<tr><td colspan='5'>No Complaints</td></tr>";
+        return;
+    }
+
     data.forEach(c=>{
         table.innerHTML += `
         <tr>
             <td>${c._id}</td>
             <td>${c.user}</td>
             <td>${c.issue}</td>
+            <td>${c.status}</td>
             <td>
-                ${c.status}
                 ${c.status !== "Resolved" ? 
-                `<button onclick="resolve('${c._id}')">Resolve</button>` : ""}
+                `<button onclick="resolve('${c._id}')">Resolve</button>` 
+                : "Done"}
             </td>
         </tr>
         `;
     });
 }
 
+// 🔥 RESOLVE
 async function resolve(id){
     await fetch("http://127.0.0.1:5000/api/admin/resolve-complaint",{
         method:"POST",
@@ -34,5 +90,10 @@ async function resolve(id){
     loadComplaints();
 }
 
+// 🔥 FIRST LOAD
 loadComplaints();
+
 </script>
+
+</body>
+</html>
