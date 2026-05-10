@@ -59,7 +59,7 @@ async function loadProfile(){
         document.getElementById("id").innerText = data.username || "N/A";
         document.getElementById("email").innerText = data.email || "N/A";
 
-        // 🔥 image safe load
+        //  image safe load
         if(data.image){
             document.getElementById("profilePic").src = data.image;
         } else {

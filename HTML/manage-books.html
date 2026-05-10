@@ -54,63 +54,117 @@
 
 <script>
 
-// 🔥 LOAD BOOKS
+//  LOAD BOOKS
 async function loadBooks(){
-    let res = await fetch("http://127.0.0.1:5000/api/books");
-    let data = await res.json();
+    try{
+        let res = await fetch("http://127.0.0.1:5000/api/books");
+        let data = await res.json();
 
-    let table = document.getElementById("bookTable");
-    table.innerHTML = "";
+        console.log("LOAD STATUS:", res.status);
 
-    data.forEach(book=>{
-        table.innerHTML += `
-        <tr>
-            <td>${book._id}</td>
-            <td>${book.name}</td>
-            <td>${book.author}</td>
-            <td class="${book.status === 'Available' ? 'available' : 'issued'}">
-                ${book.status}
-            </td>
-            <td>
-                <button onclick="deleteBook('${book._id}')">Delete</button>
-            </td>
-        </tr>
-        `;
-    });
-}
+        let table = document.getElementById("bookTable");
+        table.innerHTML = "";
 
-// 🔥 ADD BOOK
-async function addBook(){
-    let name = document.getElementById("bookName").value;
-    let author = document.getElementById("bookAuthor").value;
+        if(data.length === 0){
+            table.innerHTML = "<tr><td colspan='5'>No Books Found</td></tr>";
+            return;
+        }
 
-    if(!name || !author){
-        alert("Fill all fields");
-        return;
+        data.forEach(book=>{
+            table.innerHTML += `
+            <tr>
+                <td>${book._id}</td>
+                <td>${book.name}</td>
+                <td>${book.author}</td>
+                <td class="${book.status === 'Available' ? 'available' : 'issued'}">
+                    ${book.status}
+                </td>
+                <td>
+                    <button onclick="deleteBook('${book._id}')">Delete</button>
+                </td>
+            </tr>
+            `;
+        });
+
+    }catch(err){
+        console.log("LOAD ERROR:", err);
     }
-
-    await fetch("http://127.0.0.1:5000/api/admin/add-book",{
-        method:"POST",
-        headers:{"Content-Type":"application/json"},
-        body: JSON.stringify({name, author})
-    });
-
-    document.getElementById("bookName").value = "";
-    document.getElementById("bookAuthor").value = "";
-
-    loadBooks();
 }
 
-// 🔥 DELETE BOOK
+
+//  ADD BOOK
+async function addBook(){
+    try{
+        console.log("ADD CLICKED");
+
+        let name = document.getElementById("bookName").value.trim();
+        let author = document.getElementById("bookAuthor").value.trim();
+
+        if(!name || !author){
+            alert("Fill all fields");
+            return;
+        }
+
+        let res = await fetch("http://127.0.0.1:5000/api/admin/add-book",{
+            method:"POST",
+            headers:{
+                "Content-Type":"application/json"
+            },
+            body: JSON.stringify({name, author})
+        });
+
+        console.log("ADD STATUS:", res.status);
+
+        let data = await res.json();
+        console.log("ADD RESULT:", data);
+
+        if(data.success){
+            alert("Book Added ✅");
+        }else{
+            alert("Add Failed ❌");
+        }
+
+        // clear input
+        document.getElementById("bookName").value = "";
+        document.getElementById("bookAuthor").value = "";
+
+        loadBooks();
+
+    }catch(err){
+        console.log("ADD ERROR:", err);
+    }
+}
+
+
+//  DELETE BOOK
 async function deleteBook(id){
-    await fetch("http://127.0.0.1:5000/api/admin/delete-book/" + id,{
-        method:"DELETE"
-    });
+    try{
+        console.log("DELETE CLICKED:", id);
 
-    loadBooks();
+        let res = await fetch("http://127.0.0.1:5000/api/admin/delete-book/" + id,{
+            method:"DELETE"
+        });
+
+        console.log("DELETE STATUS:", res.status);
+
+        let data = await res.json();
+        console.log("DELETE RESULT:", data);
+
+        if(data.success){
+            alert("Deleted ✅");
+        }else{
+            alert("Delete Failed ❌");
+        }
+
+        loadBooks();
+
+    }catch(err){
+        console.log("DELETE ERROR:", err);
+    }
 }
 
-// 🔥 LOAD FIRST TIME
+
+// 🔥 FIRST LOAD
 loadBooks();
 
 </script>

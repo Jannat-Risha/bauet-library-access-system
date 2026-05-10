@@ -1,11 +1,11 @@
 const express = require("express");
-console.log("🔥 MY SERVER FILE RUNNING");
+console.log(" MY SERVER FILE RUNNING");
 const mongoose = require("mongoose");
 const cors = require("cors");
 
 const app = express();
 
-console.log("🚀 Server starting...");
+console.log(" Server starting...");
 
 app.use(cors({ origin: "*" }));
 app.use(express.json());
@@ -65,7 +65,7 @@ app.post("/api/login", async (req,res)=>{
 
         username = username.trim();
         password = password.trim();
-        role = role.trim().toLowerCase(); // 🔥 fix
+        role = role.trim().toLowerCase(); //  fix
 
         const user = await User.findOne({
             username,
@@ -119,7 +119,7 @@ app.post("/api/issue", async (req,res)=>{
 
         await r.save();
 
-        // 🔥 FIXED (আগে updateOne ছিল)
+        //  FIXED ( updateOne before)
         await Book.updateMany(
             { name: book.trim() },
             { $set: { status: "Issued" } }
@@ -219,7 +219,7 @@ app.get("/api/notifications", async (req,res)=>{
 
 /* ================= COMPLAINT ================= */
 
-console.log("🔥 COMPLAINT ROUTE LOADED");
+console.log(" COMPLAINT ROUTE LOADED");
 
 app.get("/api/complaints", async (req,res)=>{
     try{
@@ -275,7 +275,7 @@ app.get("/api/profile/:id", async (req,res)=>{
 });
 /* ================= ADMIN ================= */
 
-// 🔥 TOTAL BOOKS
+//  TOTAL BOOKS
 app.get("/api/admin/total-books", async (req,res)=>{
     try{
         const count = await Book.countDocuments();
@@ -285,17 +285,17 @@ app.get("/api/admin/total-books", async (req,res)=>{
     }
 });
 
-// 🔥 ISSUED BOOKS
+// ISSUED BOOKS
 app.get("/api/admin/issued-books", async (req,res)=>{
     try{
-        const count = await Book.countDocuments({status:"Issued"});
+        const count = await Book.countDocuments({status:"Pending"}); 
         res.json({total: count});
     }catch(err){
         res.json({total:0});
     }
 });
 
-// 🔥 PENDING REQUESTS (FIXED ✅)
+//  PENDING REQUESTS (FIXED ✅)
 app.get("/api/admin/pending-requests", async (req,res)=>{
     try{
         const count = await Request.countDocuments({status:"Pending"});
@@ -305,7 +305,7 @@ app.get("/api/admin/pending-requests", async (req,res)=>{
     }
 });
 
-// 🔥 RECENT REQUESTS (FIXED)
+//  RECENT REQUESTS (FIXED)
 app.get("/api/admin/recent-requests", async (req,res)=>{
     try{
         const data = await Request.find().sort({_id:-1}).limit(5);
@@ -321,7 +321,7 @@ app.get("/api/admin/recent-requests", async (req,res)=>{
     }
 });
 
-// 🔥 APPROVE REQUEST
+//  APPROVE REQUEST
 app.post("/api/admin/approve", async (req,res)=>{
     try{
         const {id} = req.body;
@@ -335,7 +335,7 @@ app.post("/api/admin/approve", async (req,res)=>{
         res.json({success:false});
     }
 });
-// 🔥 REJECT REQUEST (ADD THIS)
+//  REJECT REQUEST (ADD THIS)
 app.post("/api/admin/reject", async (req,res)=>{
     try{
         const {id} = req.body;
@@ -353,10 +353,10 @@ app.post("/api/admin/reject", async (req,res)=>{
 
 /* ================= ADMIN FIX ================= */
 
-// 🔥 ADD BOOK
+//  ADD BOOK
 app.post("/api/admin/add-book", async (req,res)=>{
     try{
-        console.log("🔥 ADD BOOK HIT");
+        console.log(" ADD BOOK HIT");
 
         const {name, author} = req.body;
 
@@ -380,10 +380,10 @@ app.post("/api/admin/add-book", async (req,res)=>{
     }
 });
 
-// 🔥 DELETE BOOK
+// DELETE BOOK
 app.delete("/api/admin/delete-book/:id", async (req,res)=>{
     try{
-        console.log("🔥 DELETE HIT");
+        console.log("DELETE HIT");
 
         await Book.findByIdAndDelete(req.params.id);
 
@@ -393,7 +393,7 @@ app.delete("/api/admin/delete-book/:id", async (req,res)=>{
         res.json({success:false});
     }
 });
-// 🔥 RESOLVE COMPLAINT
+// RESOLVE COMPLAINT
 app.post("/api/admin/resolve-complaint", async (req,res)=>{
     try{
         const {id} = req.body;
@@ -407,7 +407,7 @@ app.post("/api/admin/resolve-complaint", async (req,res)=>{
         res.json({success:false});
     }
 });
-// 🔥 ADMIN GET ALL COMPLAINTS (ADD THIS)
+// ADMIN GET ALL COMPLAINTS (ADD THIS)
 app.get("/api/admin/complaints", async (req,res)=>{
     try{
         const data = await Complaint.find().sort({_id:-1});
@@ -421,5 +421,5 @@ app.get("/api/admin/complaints", async (req,res)=>{
 /* ================= START ================= */
 
 app.listen(5000,()=>{
-    console.log("🔥 Server running on http://127.0.0.1:5000");
+    console.log(" Server running on http://127.0.0.1:5000");
 });

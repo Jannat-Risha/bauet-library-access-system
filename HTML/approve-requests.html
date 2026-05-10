@@ -1,6 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Approve Requests</title>
+<link rel="stylesheet" href="style.css">
+
+<style>
+/*  EXTRA COLOR */
+.approved{
+    color: green;
+    font-weight: bold;
+}
+
+.rejected{
+    color: red;
+    font-weight: bold;
+}
+</style>
+
+</head>
+
+<body class="admin-body">
+
+<div class="admin-header">Approve Requests</div>
+
+<div class="admin-container">
+
+<div class="admin-sidebar">
+<a href="admin-dashboard.html">Dashboard</a>
+<a href="manage-books.html">Manage Books</a>
+<a href="approve-requests.html" class="active">Approve Requests</a>
+<a href="admin-complaints.html">Complaints</a>
+<a href="index.html">Logout</a>
+</div>
+
+<div class="admin-content">
+
+<h2>Pending Requests</h2>
+
+<table>
+<thead>
+<tr>
+<th>User</th>
+<th>Book</th>
+<th>Action</th>
+</tr>
+</thead>
+
 <tbody id="requestTable"></tbody>
 
+</table>
+
+</div>
+
+</div>
+
 <script>
+
+//  LOAD REQUESTS
 async function loadRequests(){
     let res = await fetch("http://127.0.0.1:5000/api/admin/recent-requests");
     let data = await res.json();
@@ -8,22 +65,37 @@ async function loadRequests(){
     let table = document.getElementById("requestTable");
     table.innerHTML = "";
 
+    if(data.length === 0){
+        table.innerHTML = "<tr><td colspan='3'>No Requests</td></tr>";
+        return;
+    }
+
     data.forEach(r=>{
-        if(r.status === "Pending"){
-            table.innerHTML += `
-            <tr>
-                <td>${r.user}</td>
-                <td>${r.book}</td>
-                <td>
-                    <button onclick="approve('${r._id}')">Approve</button>
-                    <button onclick="reject('${r._id}')">Reject</button>
-                </td>
-            </tr>
-            `;
-        }
+
+        table.innerHTML += `
+        <tr id="${r._id}">
+            <td>${r.user}</td>
+            <td>${r.book}</td>
+            <td class="${r.status === 'Approved' ? 'approved' : r.status === 'Rejected' ? 'rejected' : ''}">
+                
+                ${
+                    r.status === "Issued" 
+                    ? "Issued"
+                    :
+                    r.status === "Rejected"
+                    ? "Rejected"
+                    :
+                    `<button onclick="approve('${r._id}')">Approve</button>
+                     <button onclick="reject('${r._id}')">Reject</button>`
+                }
+
+            </td>
+        </tr>
+        `;
     });
 }
 
+//  APPROVE
 async function approve(id){
     await fetch("http://127.0.0.1:5000/api/admin/approve",{
         method:"POST",
@@ -34,6 +106,7 @@ async function approve(id){
     loadRequests();
 }
 
+//  REJECT (row instant remove)
 async function reject(id){
     await fetch("http://127.0.0.1:5000/api/admin/reject",{
         method:"POST",
@@ -41,8 +114,19 @@ async function reject(id){
         body: JSON.stringify({id})
     });
 
+    //  instant remove row
+    let row = document.getElementById(id);
+    if(row){
+        row.remove();
+    }
+
     loadRequests();
 }
 
+//  FIRST LOAD
 loadRequests();
+
 </script>
+
+</body>
+</html>

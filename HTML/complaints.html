@@ -75,7 +75,7 @@
     </div>
 
     <script>
-        // 🔥 submit complaint
+        // submit complaint
         async function submitComplaint() {
             let user = document.getElementById("studentId").value;
             let type = document.getElementById("complaintType").value;
@@ -100,7 +100,7 @@
             }
         }
 
-        // 🔥 load complaints
+        //  load complaints
         async function loadComplaints() {
             let res = await fetch("http://127.0.0.1:5000/api/complaints");
             let data = await res.json();

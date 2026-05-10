@@ -34,17 +34,17 @@
         <div class="cards">
             <div class="card">
                 <h3>Total Books</h3>
-                <span>1200</span>
+                <span id="totalBooks">Loading...</span>
             </div>
 
             <div class="card">
                 <h3>Issued Books</h3>
-                <span>350</span>
+                <span id="issuedBooks">Loading...</span>
             </div>
 
             <div class="card">
                 <h3>Pending Requests</h3>
-                <span>25</span>
+                <span id="pendingRequests">Loading...</span>
             </div>
         </div>
 
@@ -52,35 +52,91 @@
         <h3 style="margin-top:30px;">Recent Requests</h3>
 
         <table>
-            <tr>
-                <th>User</th>
-                <th>Request</th>
-                <th>Action</th>
-            </tr>
+            <thead>
+                <tr>
+                    <th>User</th>
+                    <th>Request</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
 
-            <tr>
-                <td>Student 21045</td>
-                <td>Reserve Operating Systems</td>
-                <td>
-                    <button class="approve-btn">Approve</button>
-                    <button class="reject-btn">Reject</button>
-                </td>
-            </tr>
-
-            <tr>
-                <td>Student 21046</td>
-                <td>Issue Database Book</td>
-                <td>
-                    <button class="approve-btn">Approve</button>
-                    <button class="reject-btn">Reject</button>
-                </td>
-            </tr>
+            <tbody id="requestTable">
+                <tr><td colspan="3">Loading...</td></tr>
+            </tbody>
 
         </table>
 
     </div>
 
 </div>
+
+<!--  SCRIPT -->
+<script>
+
+async function loadDashboard(){
+
+    try{
+        // TOTAL
+        let res1 = await fetch("http://127.0.0.1:5000/api/admin/total-books");
+        let data1 = await res1.json();
+        document.getElementById("totalBooks").innerText = data1.total;
+
+        // ISSUED
+        let res2 = await fetch("http://127.0.0.1:5000/api/admin/issued-books");
+        let data2 = await res2.json();
+        document.getElementById("issuedBooks").innerText = data2.total;
+
+        // PENDING
+        let res3 = await fetch("http://127.0.0.1:5000/api/admin/pending-requests");
+        let data3 = await res3.json();
+        document.getElementById("pendingRequests").innerText = data3.total;
+
+        // REQUEST TABLE
+        let res4 = await fetch("http://127.0.0.1:5000/api/admin/recent-requests");
+        let data4 = await res4.json();
+
+        let table = document.getElementById("requestTable");
+        table.innerHTML = "";
+
+        if(data4.length === 0){
+            table.innerHTML = "<tr><td colspan='3'>No Requests Found</td></tr>";
+            return;
+        }
+
+        data4.forEach(r=>{
+            table.innerHTML += `
+            <tr>
+                <td>${r.user || "-"}</td>
+                <td>${r.book || "-"}</td>
+                <td>
+                    <button onclick="approve('${r._id}')">Approve</button>
+                </td>
+            </tr>
+            `;
+        });
+
+    }catch(err){
+        console.log("Dashboard Error:", err);
+        document.getElementById("requestTable").innerHTML =
+            "<tr><td colspan='3'>Server Error</td></tr>";
+    }
+}
+
+// APPROVE
+async function approve(id){
+    await fetch("http://127.0.0.1:5000/api/admin/approve", {
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body: JSON.stringify({id})
+    });
+
+    loadDashboard();
+}
+
+// AUTO LOAD
+loadDashboard();
+
+</script>
 
 </body>
 </html>

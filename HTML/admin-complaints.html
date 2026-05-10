@@ -4,66 +4,109 @@
 <meta charset="UTF-8">
 <title>Admin Complaints</title>
 <link rel="stylesheet" href="style.css">
+
+<style>
+.approved{
+    color: green;
+    font-weight: bold;
+}
+.pending{
+    color: red;
+    font-weight: bold;
+}
+</style>
+
 </head>
 
 <body class="admin-body">
 
-<!-- HEADER -->
 <div class="admin-header">
     Complaints Management
 </div>
 
 <div class="admin-container">
 
-    <!-- SIDEBAR -->
-    <div class="admin-sidebar">
-        <a href="admin-dashboard.html">Dashboard</a>
-        <a href="manage-books.html">Manage Books</a>
-        <a href="approve-requests.html">Approve Requests</a>
-        <a href="admin-complaints.html" class="active">Complaints</a>
-        <a href="index.html">Logout</a>
-    </div>
+<div class="admin-sidebar">
+    <a href="admin-dashboard.html">Dashboard</a>
+    <a href="manage-books.html">Manage Books</a>
+    <a href="approve-requests.html">Approve Requests</a>
+    <a href="admin-complaints.html" class="active">Complaints</a>
+    <a href="index.html">Logout</a>
+</div>
 
-    <!-- CONTENT -->
-    <div class="admin-content">
+<div class="admin-content">
 
-        <h2>All Complaints</h2>
-        <p class="subtitle">Review and manage user complaints</p>
+<h2>All Complaints</h2>
+<p class="subtitle">Review and manage user complaints</p>
 
-        <table>
-            <tr>
-                <th>Complaint ID</th>
-                <th>User ID</th>
-                <th>Issue</th>
-                <th>Status</th>
-            </tr>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>User</th>
+<th>Issue</th>
+<th>Status</th>
+<th>Action</th>
+</tr>
+</thead>
 
-            <tr>
-                <td>C-101</td>
-                <td>21045</td>
-                <td>Internet Problem</td>
-                <td class="pending">Pending</td>
-            </tr>
+<tbody id="complaintTable"></tbody>
 
-            <tr>
-                <td>C-102</td>
-                <td>21046</td>
-                <td>Seating Issue</td>
-                <td class="approved">Resolved</td>
-            </tr>
-
-            <tr>
-                <td>C-103</td>
-                <td>21047</td>
-                <td>Lighting Issue</td>
-                <td class="pending">Pending</td>
-            </tr>
-
-        </table>
-
-    </div>
+</table>
 
 </div>
+
+</div>
+
+<script>
+
+//  LOAD COMPLAINTS
+async function loadComplaints(){
+    let res = await fetch("http://127.0.0.1:5000/api/admin/complaints");
+    let data = await res.json();
+
+    let table = document.getElementById("complaintTable");
+    table.innerHTML = "";
+
+    if(data.length === 0){
+        table.innerHTML = "<tr><td colspan='5'>No Complaints</td></tr>";
+        return;
+    }
+
+    data.forEach(c=>{
+        table.innerHTML += `
+        <tr id="${c._id}">
+            <td>${c._id}</td>
+            <td>${c.user}</td>
+            <td>${c.message}</td> <!--  FIXED এখানে -->
+            <td class="${c.status === 'Resolved' ? 'approved' : 'pending'}">
+                ${c.status}
+            </td>
+            <td>
+                ${c.status !== "Resolved" ? 
+                `<button onclick="resolve('${c._id}')">Resolve</button>` 
+                : "Done"}
+            </td>
+        </tr>
+        `;
+    });
+}
+
+//  RESOLVE
+async function resolve(id){
+    await fetch("http://127.0.0.1:5000/api/admin/resolve-complaint",{
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body: JSON.stringify({id})
+    });
+
+    loadComplaints();
+}
+
+//  FIRST LOAD
+loadComplaints();
+
+</script>
 
 </body>
 </html>

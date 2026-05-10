@@ -53,7 +53,7 @@ console.log("JS RUNNING ✅");
 
 let booksData = [];
 
-// 🔥 LOAD BOOKS FROM BACKEND
+//  LOAD BOOKS FROM BACKEND
 async function loadBooks(){
     try{
         console.log("FETCH START");
@@ -75,7 +75,7 @@ async function loadBooks(){
     }
 }
 
-// 🔥 SHOW BOOKS IN TABLE
+//  SHOW BOOKS IN TABLE
 function displayBooks(books){
     let table = document.getElementById("bookTable");
     table.innerHTML = "";
@@ -99,7 +99,7 @@ function displayBooks(books){
     });
 }
 
-// 🔥 SEARCH FUNCTION
+//  SEARCH FUNCTION
 function searchBooks(){
     let text = document.getElementById("searchInput").value.toLowerCase();
 
@@ -111,7 +111,7 @@ function searchBooks(){
     displayBooks(filtered);
 }
 
-// 🔥 CALL ON PAGE LOAD
+//  CALL ON PAGE LOAD
 loadBooks();
 </script>
 

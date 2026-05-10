@@ -111,7 +111,7 @@
                     </tr>
                 </thead>
 
-                <!-- 🔥 dynamic data এখানে আসবে -->
+                <!--  dynamic data here -->
                 <tbody id="resTable"></tbody>
             </table>
         </div>
@@ -127,13 +127,13 @@ async function loadReservations(){
         let table = document.getElementById("resTable");
         table.innerHTML = "";
 
-        // ❗ যদি data না থাকে
+        // ❗data blank
         if(data.length === 0){
             table.innerHTML = "<tr><td colspan='4'>No Reservations</td></tr>";
             return;
         }
 
-        // 🔥 loop করে show
+        //  loop  show
         data.forEach((r,i)=>{
             table.innerHTML += `
                 <tr>
@@ -152,7 +152,7 @@ async function loadReservations(){
     }
 }
 
-// 🔥 page load এ call
+// page load call
 loadReservations();
 </script>
 
